@@ -14,3 +14,8 @@ class Account:
         fee = 1.0
         if amount > 0 and (self.balance + fee) >= amount:
             self.balance -= (amount + fee)
+
+    def transfer(self, amount):
+        fee = 3.0
+        if amount > 0 and (self.balance + fee) >= amount:
+            self.balance += (amount + fee)
