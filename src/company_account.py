@@ -16,3 +16,10 @@ class CompanyAccount(Account):
         fee = 5.0
         if amount > 0 and (self.balance + fee) >= amount:
             self.balance -= (amount + fee)
+
+    def take_loan(self, amount: float):
+        if self.balance >= 2 * amount and -1775 in self.history:
+            self.balance += amount
+            return True
+
+        return False
