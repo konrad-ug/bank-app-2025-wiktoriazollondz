@@ -1,4 +1,6 @@
 import pytest
+
+from src.accounts_registry import AccountsRegistry
 from src.personal_account import PersonalAccount
 from src.company_account import CompanyAccount
 from src.account import Account
@@ -14,3 +16,7 @@ def comp_acc():
 @pytest.fixture
 def acc():
     return Account()
+
+@pytest.fixture
+def acc_reg():
+    return AccountsRegistry()
