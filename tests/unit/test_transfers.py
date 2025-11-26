@@ -1,25 +1,18 @@
-from src.personal_account import PersonalAccount
-from src.account import Account
-
+import pytest
 class TestTransfers:
-    def test_incoming_transfer(self):
-        account = Account()
-        account.incoming_transfer(100.0)
-        assert account.balance == 100.0
+    @pytest.mark.parametrize("input, expected", [
+        (100.0, 100.0),
+        (-20.0, 0.0)
+    ])
+    def test_incoming_transfer(self, acc, input, expected):
+        acc.incoming_transfer(input)
+        assert acc.balance == expected
 
-    def test_outgoing_transfer(self):
-        account = Account()
-        account.balance = 100.0
-        account.outgoing_transfer(50.0)
-        assert account.balance == 50.0
-
-    def test_outgoing_transfer_exceeding_balance(self):
-        account = Account()
-        account.balance = 30.0
-        account.outgoing_transfer(50.0)
-        assert account.balance == 30.0
-
-    def test_incoming_transfer_negative_amount(self):
-        account = Account()
-        account.incoming_transfer(-20.0)
-        assert account.balance == 0.0
+    @pytest.mark.parametrize("input1, input2, expected", [
+        (100.0, 50.0, 50.0),
+        (30.0, 50.0, 30.0)
+    ])
+    def test_outgoing_transfer(self, acc, input1, input2, expected):
+        acc.balance = input1
+        acc.outgoing_transfer(input2)
+        assert acc.balance == expected

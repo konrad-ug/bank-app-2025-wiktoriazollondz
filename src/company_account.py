@@ -4,6 +4,9 @@ class CompanyAccount(Account):
     def __init__(self, company_name: str, nip: str):
         super().__init__()
         self.company_name = company_name
+        self.set_nip(nip)
+
+    def set_nip(self, nip):
         if isinstance(nip, str) and len(nip) == 10 and nip.isdigit():
             self.nip = nip
         else:
