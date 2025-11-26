@@ -1,6 +1,4 @@
-from src.account import Account
 from src.personal_account import PersonalAccount
-
 
 class TestAccount:
     def test_account_creation(self):

@@ -10,3 +10,17 @@ class PersonalAccount(Account):
             self.pesel = pesel
         else:
             self.pesel = "Invalid"
+
+    def submit_for_loan(self, amount):
+        if len(self.history) >= 3:
+            last_three = self.history[-3:]
+            if all(t > 0 for t in last_three):
+                self.balance += amount
+                return True
+
+        if len(self.history) >= 5:
+            if sum(self.history[-5:]) > amount:
+                self.balance += amount
+                return True
+
+        return False
