@@ -1,18 +1,19 @@
-from src.personal_account import PersonalAccount
-
+import pytest
 class TestAccount:
-    def test_account_creation(self):
-        account = PersonalAccount("John", "Doe", "12345678910")
-        assert account.first_name == "John"
-        assert account.last_name == "Doe"
-        assert account.balance == 0
-        assert account.pesel == "12345678910"
+    @pytest.mark.parametrize("input, expected", [
+        ("12345678910", "12345678910"),  # prawidłowy PESEL
+        ("4325436865564357658", "Invalid"),  # za długi
+        ("4325436", "Invalid"),  # za krótki
+        ("abcdefghijk", "Invalid"),  # niecyfry
+    ])
+    def test_pesel_validation(self, personal_acc, input, expected):
+        personal_acc.set_pesel(input)
+        assert personal_acc.pesel == expected
 
-    def test_pesel_too_long_or_short(self):
-        account = PersonalAccount("Jan", "Kowalski", "4325436865564357658")
-        account2 = PersonalAccount("Joe", "Doe", "4325436")
-        assert account.pesel == "Invalid"
-        assert account2.pesel == "Invalid"
+    def test_account_creation(self, personal_acc):
+        assert personal_acc.first_name == "Jan"
+        assert personal_acc.last_name == "Kowalski"
+        assert personal_acc.balance == 0
 
 
 
