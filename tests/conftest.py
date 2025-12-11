@@ -20,3 +20,11 @@ def acc():
 @pytest.fixture
 def acc_reg():
     return AccountsRegistry()
+
+@pytest.fixture
+def api_acc():
+    return {
+            "name": "Jan",
+            "surname": "Kowalski",
+            "pesel": "12345678901"
+    }
