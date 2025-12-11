@@ -4,13 +4,22 @@ from src.personal_account import PersonalAccount
 
 app = Flask(__name__)
 registry = AccountsRegistry()
+
+@app.route("/api/accounts/reset", methods=['POST'])
+def reset_accounts():
+    registry.accounts = []
+    return jsonify({"message": "Registry cleared"}), 200
+
 @app.route("/api/accounts", methods=['POST'])
 def create_account():
     data = request.get_json()
     print(f"Create account request: {data}")
     account = PersonalAccount(data["name"], data["surname"], data["pesel"])
-    registry.add_account(account)
-    return jsonify({"message": "Account created"}), 201
+    result = registry.add_account(account)
+    if result is True:
+        return jsonify({"message": "Account created"}), 201
+    else:
+        return jsonify({"message": "Account with this pesel already exists"}), 409
 
 @app.route("/api/accounts", methods=['GET'])
 def get_all_accounts():
