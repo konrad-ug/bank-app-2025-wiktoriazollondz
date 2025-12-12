@@ -65,3 +65,33 @@ def delete_account(pesel):
 
     registry.accounts.remove(acc)
     return jsonify({"message": "Account deleted"}), 200
+
+@app.route("/api/accounts/<pesel>/transfer", methods=['POST'])
+def transfer_account(pesel):
+    print("Transfer account request received")
+    acc = registry.search_pesel(pesel)
+    if acc is None:
+        return jsonify({"error": "Account not found"}), 404
+
+    body = request.get_json()
+    type = body["type"]
+    amount = body["amount"]
+
+    if type == "incoming":
+        acc.incoming_transfer(amount)
+        return jsonify({"message": "Order accepted for processing"}), 200
+
+    elif type == "outgoing":
+        success = acc.outgoing_transfer(amount)
+        if not success:
+            return jsonify({"error": "Transfer not successful"}), 422
+        return jsonify({"message": "Order accepted for processing"}), 200
+
+    elif type == "express":
+        success = acc.express_transfer(amount)
+        if not success:
+            return jsonify({"error": "Transfer not successful"}), 422
+        return jsonify({"message": "Order accepted for processing"}), 200
+
+    else:
+        return jsonify({"error": "Unknown transfer type"}), 400

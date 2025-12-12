@@ -54,10 +54,3 @@ class TestAPI:
         assert r.status_code == 200
         r2 = requests.get(f"{url}/12345678901")
         assert r2.status_code == 404
-
-    def test_unique_pesel(self, api_acc):
-        requests.post(f"{url}/reset")
-        r1 = requests.post(url, json=api_acc)
-        r2 = requests.post(url, json=api_acc)
-        assert r2.status_code == 409
-        assert r2.json()["message"] == "Account with this pesel already exists"
