@@ -30,7 +30,7 @@ def api_acc():
             "pesel": "12345678901"
     }
 
-@pytest.fixture
+@pytest.fixture(autouse=True)
 def mock_requests_get():
     with patch("src.company_account.requests.get") as mock_get:
         mock_get.return_value.status_code = 200
