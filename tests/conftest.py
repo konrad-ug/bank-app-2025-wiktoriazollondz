@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 
 from src.accounts_registry import AccountsRegistry
 from src.personal_account import PersonalAccount
@@ -28,3 +29,12 @@ def api_acc():
             "surname": "Kowalski",
             "pesel": "12345678901"
     }
+
+@pytest.fixture
+def mock_requests_get():
+    with patch("src.company_account.requests.get") as mock_get:
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {
+            "result": {"subject": {"statusVat": "Czynny"}}  # domyślnie firma aktywna
+        }
+        yield mock_get
