@@ -1,6 +1,6 @@
 import pytest
 from src.company_account import CompanyAccount
-@pytest.mark.usefixtures("mock_mf_ok")
+@pytest.mark.usefixtures("mock_gov_api")
 class TestCompanyAccount:
     def test_account_creation(self, comp_acc):
         assert comp_acc.company_name == "Tech Solutions"
@@ -20,18 +20,18 @@ class TestCompanyAccount:
         comp_acc.outgoing_transfer(100.0)
         assert comp_acc.balance == 100.0
 
-    def test_company_account_creation_success(self, mock_mf_ok):
+    def test_company_account_creation_success(self, mock_gov_api):
         account = CompanyAccount("Tech Solutions", "1234567890")
         assert account.nip == "1234567890"
 
-    def test_company_account_invalid_nip_raises(self, mock_mf_ok):
-        mock_mf_ok.return_value.json.return_value = {
+    def test_company_account_invalid_nip_raises(self, mock_gov_api):
+        mock_gov_api.return_value.json.return_value = {
             "result": {"subject": {"statusVat": "Nieaktywny"}}
         }
 
         with pytest.raises(ValueError, match="Company not registered!!"):
             CompanyAccount("Bad Company", "1234567890")
 
-    def test_company_account_short_nip(self, mock_mf_ok):
+    def test_company_account_short_nip(self, mock_gov_api):
         account = CompanyAccount("Small Biz", "123")
         assert account.nip == "Invalid"

@@ -31,10 +31,15 @@ def api_acc():
     }
 
 @pytest.fixture
-def mock_mf_ok(mocker):
-    mock = mocker.patch("src.company_account.requests.get")
-    mock.return_value.status_code = 200
-    mock.return_value.json.return_value = {
-        "result": {"subject": {"statusVat": "Czynny"}}
-    }
-    return mock
+def mock_gov_api():
+    # Patchujemy requests w miejscu, gdzie jest używany
+    with patch("src.company_account.requests.get") as mock_get:
+        mock_get.return_value.status_code = 200
+        mock_get.return_value.json.return_value = {
+            "result": {
+                "subject": {
+                    "statusVat": "Czynny"
+                }
+            }
+        }
+        yield mock_get
