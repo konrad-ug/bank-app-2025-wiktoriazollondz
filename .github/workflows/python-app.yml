@@ -17,6 +17,9 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      BANK_APP_MF_URL: https://wl-test.mf.gov.pl
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.10
@@ -40,3 +43,7 @@ jobs:
     - name: Check code coverage
       run: |
         python3 -m coverage report --fail-under=100
+    - name: Run tests
+      run: |
+        export DISABLE_MF_VALIDATION=true
+        pytest

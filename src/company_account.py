@@ -1,4 +1,7 @@
 from src.account import Account
+import os
+from datetime import datetime
+import requests
 
 class CompanyAccount(Account):
     def __init__(self, company_name: str, nip: str):
@@ -9,6 +12,8 @@ class CompanyAccount(Account):
     def set_nip(self, nip):
         if isinstance(nip, str) and len(nip) == 10 and nip.isdigit():
             self.nip = nip
+            if not self.is_company_active(nip):
+                raise ValueError("Company not registered!!")
         else:
             self.nip = "Invalid"
 
@@ -23,3 +28,27 @@ class CompanyAccount(Account):
             return True
 
         return False
+
+    def is_company_active(self, nip):
+        if os.getenv("DISABLE_MF_VALIDATION") == "true":
+            return True
+
+        today_date = datetime.today().strftime("%Y-%m-%d")
+        base_url = os.getenv("BANK_APP_MF_URL", "https://wl-test.mf.gov.pl")
+
+        if len(nip) != 10:
+            return True
+
+        url = f"{base_url}/api/search/nip/{nip}?date={today_date}"
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            return False
+
+        data = response.json() or {}
+        subject = data.get("result", {}).get("subject")
+
+        if not subject:
+            return False
+
+        return subject.get("statusVat") == "Czynny"
