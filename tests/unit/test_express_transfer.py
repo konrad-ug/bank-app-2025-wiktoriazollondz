@@ -1,4 +1,5 @@
 import pytest
+@pytest.mark.usefixtures("mock_mf_ok")
 class TestExpressTransfer:
     @pytest.mark.parametrize("input1, input2, expected", [
         (100.0, 50.0, 49.0),

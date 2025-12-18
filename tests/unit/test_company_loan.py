@@ -1,4 +1,5 @@
 import pytest
+@pytest.mark.usefixtures("mock_mf_ok")
 class TestLoan:
     @pytest.mark.parametrize("balance, history, amount, expected_balance, expected_result", [
         (300.0, [-1775], 100.0, 400.0, True),  # oba warunki OK
