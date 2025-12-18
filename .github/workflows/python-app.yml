@@ -43,7 +43,3 @@ jobs:
     - name: Check code coverage
       run: |
         python3 -m coverage report --fail-under=100
-    - name: Run tests
-      run: |
-        export DISABLE_MF_VALIDATION=true
-        pytest
