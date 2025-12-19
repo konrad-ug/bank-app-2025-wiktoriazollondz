@@ -1,4 +1,6 @@
 from src.account import Account
+from datetime import datetime
+from smtp.smtp import SMTPClient
 
 class PersonalAccount(Account):
     def __init__(self, first_name, last_name, pesel=None, balance=0):
@@ -35,3 +37,11 @@ class PersonalAccount(Account):
         if len(self.history) < 5:
             return False
         return sum(self.history[-5:]) > amount
+
+    def send_history_via_email(self, email_address, smtp_client: SMTPClient):
+        today_date = datetime.today().strftime("%Y-%m-%d")
+        subject = f"Account Transfer History {today_date}"
+        content = f"Personal account history: {self.history}"
+
+        # Wywołujemy metodę kolegi
+        return smtp_client.send(subject, content, email_address)
