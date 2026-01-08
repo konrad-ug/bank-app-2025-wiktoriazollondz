@@ -2,23 +2,24 @@ import requests
 import time
 
 URL = "http://127.0.0.1:5000"
-LIMIT = 0.5  #0.5 sek
+LIMIT = 0.5  # 0.5 sek
+
 
 def test_1_stworz_usun():
     for i in range(100):
-        #tworzenie
+        # tworzenie
         start = time.time()
         r_post = requests.post(f"{URL}/accounts", json={"name": "Test"}, timeout=LIMIT)
         koniec = time.time() - start
 
-        #sprawdzenie kodu i czasu
+        # sprawdzenie statusu zanim zrobimy .json()
         if r_post.status_code not in [200, 201] or koniec > LIMIT:
             print("Błąd")
             return
 
         acc_id = r_post.json()["id"]
 
-        #usuwanie
+        # usuwanie
         start = time.time()
         r_del = requests.delete(f"{URL}/accounts/{acc_id}", timeout=LIMIT)
         koniec = time.time() - start
@@ -31,7 +32,13 @@ def test_1_stworz_usun():
 
 
 def test_2_przelewy_i_saldo():
-    r_acc = requests.post(f"{URL}/accounts", json={"name": "User1", "balance": 0})
+    # dodanie timeout i sprawdzenie statusu na starcie
+    r_acc = requests.post(f"{URL}/accounts", json={"name": "User1", "balance": 0}, timeout=LIMIT)
+
+    if r_acc.status_code not in [200, 201]:
+        print("Błąd")
+        return
+
     acc_id = r_acc.json()["id"]
 
     for i in range(100):
@@ -40,11 +47,16 @@ def test_2_przelewy_i_saldo():
         koniec = time.time() - start
 
         if r_trans.status_code not in [200, 201] or koniec > LIMIT:
-            print(f"Błąd przelewu")
+            print("Błąd przelewu")
             return
 
-    #sprawdzenie salda na koniec
-    r_final = requests.get(f"{URL}/accounts/{acc_id}")
+    # sprawdzenie salda na koniec
+    r_final = requests.get(f"{URL}/accounts/{acc_id}", timeout=LIMIT)
+
+    if r_final.status_code != 200:
+        print("Błąd")
+        return
+
     saldo = r_final.json()["balance"]
 
     if saldo == 1000:
@@ -53,6 +65,6 @@ def test_2_przelewy_i_saldo():
         print(f"Test 2: Błąd, saldo wynosi {saldo}, a powinno być 1000")
 
 
-#wywołanie funkcji
+# wywołanie funkcji
 test_1_stworz_usun()
 test_2_przelewy_i_saldo()
