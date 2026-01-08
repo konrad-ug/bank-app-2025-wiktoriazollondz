@@ -1,7 +1,7 @@
 import requests
 import time
 
-URL = "http://localhost:3000"
+URL = "http://127.0.0.1:5000"
 LIMIT = 0.5  #0.5 sek
 
 def test_1_stworz_usun():
