@@ -32,7 +32,6 @@ def api_acc():
 
 @pytest.fixture
 def mock_gov_api():
-    # Patchujemy requests w miejscu, gdzie jest używany
     with patch("src.company_account.requests.get") as mock_get:
         mock_get.return_value.status_code = 200
         mock_get.return_value.json.return_value = {

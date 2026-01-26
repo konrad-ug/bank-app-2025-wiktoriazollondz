@@ -7,7 +7,6 @@ class PersonalAccount(Account):
         super().__init__(balance)
         self.first_name = first_name
         self.last_name = last_name
-        self.balance = 0.0
         self.set_pesel(pesel)
 
     def set_pesel(self, pesel):
@@ -43,5 +42,4 @@ class PersonalAccount(Account):
         subject = f"Account Transfer History {today_date}"
         content = f"Personal account history: {self.history}"
 
-        # Wywołujemy metodę kolegi
         return smtp_client.send(subject, content, email_address)

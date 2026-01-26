@@ -1,9 +1,11 @@
 from flask import Flask, request, jsonify
 from src.accounts_registry import AccountsRegistry
 from src.personal_account import PersonalAccount
+from src.mongo_repository import MongoAccountsRepository
 
 app = Flask(__name__)
 registry = AccountsRegistry()
+repository = MongoAccountsRepository("mongodb://localhost:27017/", "bank_db", "accounts")
 
 @app.route("/api/accounts/reset", methods=['POST'])
 def reset_accounts():
@@ -95,3 +97,25 @@ def transfer_account(pesel):
 
     else:
         return jsonify({"error": "Unknown transfer type"}), 400
+
+@app.route("/api/accounts/save", methods=['POST'])
+def save_accounts():
+    accounts = registry.return_account()
+    repository.save_all(accounts)
+    return jsonify({"message": "Successfully saved to database"}), 200
+
+@app.route("/api/accounts/load", methods=['POST'])
+def load_accounts():
+    registry.accounts = []
+
+    accounts_data = repository.load_all()
+    for data in accounts_data:
+        nowe_konto = PersonalAccount(
+            data["first_name"],
+            data["last_name"],
+            data["pesel"],
+            data["balance"]
+        )
+        registry.add_account(nowe_konto)
+
+    return jsonify({"message": "Successfully loaded from database"}), 200

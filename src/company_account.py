@@ -37,14 +37,12 @@ class CompanyAccount(Account):
 
         try:
             response = requests.get(url)
-            # Wymagany print odpowiedzi dla logów
             print(f"MF API Response: {response.status_code}, {response.text}")
 
             if response.status_code != 200:
                 return False
 
             data = response.json()
-            # Bezpieczne pobieranie statusu
             result = data.get("result", {})
             subject = result.get("subject")
 
